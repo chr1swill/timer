@@ -13,7 +13,57 @@
 			rel="stylesheet"
 		/>
 	</head>
-	<body>
-		<main></main>
+	<body class="grid place-content-center gap-4">
+		<header class="w-full">
+			<h1 class="w-full text-center text-xl font-bold">Web Based Timer</h1>
+		</header>
+
+		<main class="w-full h-full grid place-content-center">
+			<section
+				id="displayTimer"
+				class="bg-background rounded grid place-content-center shadow-text drop-shadow-sm p-2"
+			>
+				<p data-timer-count class="text-2xl font-bold">For test</p>
+			</section>
+
+			<section
+				id="controlTimer"
+				class="w-full h-auto flex flex-col gap-3 shadow-text drop-shadow-sm bg-background rounded justify-center items-center p-2"
+			>
+				<label
+					for="selectTimeForTimer"
+					class="w-full h-full rounded bg-white text-text p-2 font-base text-lg"
+				>
+					Choose Time
+					<input
+						type="number"
+						id="selectTimeForTimer"
+						name="selectTimeForTimer"
+						min="0"
+					/>
+				</label>
+
+				<div class="w-full h-full flex flex-row gap-2">
+					<button
+						id="stopTimer"
+						class="w-full h-full rounded bg-white text-text p-2 font-base text-lg"
+					>
+						Stop Timer
+					</button>
+					<button
+						id="pauseTimer"
+						class="w-full h-full rounded bg-white text-text p-2 font-base text-lg"
+					>
+						Pause Timer
+					</button>
+					<button
+						id="startTimer"
+						class="w-full h-full rounded bg-white text-text p-2 font-base text-lg"
+					>
+						Start Timer
+					</button>
+				</div>
+			</section>
+		</main>
 	</body>
 </html>
