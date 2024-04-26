@@ -10,6 +10,11 @@ class TimerController {
 	timeout = 0;
 
 	/**
+	 * @type{number}
+	 */
+	interval = 0;
+
+	/**
 	 * @param{Function} workFunc
 	 * @param{number} interval
 	 * @param{Function} errorFunc
@@ -18,48 +23,49 @@ class TimerController {
 		this.workFunc = workFunc;
 		this.interval = interval;
 		this.errorFunc = errorFunc;
+		this.step = this.step.bind(this);
 	}
 
 	/*
 	 * @public
 	 */
 	start() {
-		this.expected = Date.now() + this.interval;
-		this.timeout = setTimeout(this.step, this.interval);
+		const now = Date.now();
+		this.expected = now + this.interval;
+		this.timeout = window.setTimeout(() => this.step(), this.interval);
 	}
 
 	/*
 	 * @public
 	 */
 	stop() {
-		clearTimeout(this.timeout);
+		window.clearTimeout(this.timeout);
 	}
 
 	/*
 	 * @private
 	 */
 	step() {
-		const drift = Date.now() - this.expected;
+		const now = Date.now();
+		const drift = this.expected - now;
 		if (drift > this.interval) {
 			if (this.errorFunc) this.errorFunc();
 		}
-		() => this.workFunc;
+		this.workFunc();
 		this.expected += this.interval;
-		this.timeout = setTimeout(this.step, Math.max(0, this.interval));
+		this.timeout = window.setTimeout(this.step, Math.max(0, this.interval));
 	}
 }
 
 let justSomeNumber = 0;
 
-// Define the work to be done
 const doWork = function () {
 	console.log(++justSomeNumber);
 };
 
-// Define what to do if something goes wrong
 const doError = function () {
 	console.warn("The drift exceeded the interval.");
 };
 
-const ticker = new TimerController(doWork, 10000, doError);
+const ticker = new TimerController(doWork, 1000, doError);
 ticker.start();
