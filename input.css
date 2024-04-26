@@ -1,0 +1,36 @@
+:root {
+	--font-family: "Inter", sans-serif;
+}
+
+@media (prefers-color-scheme: light) {
+	:root {
+		--text: rgba(10, 10, 10, 1);
+		--background: rgba(240, 240, 240, 1);
+		--primary: rgba(63, 127, 254, 1);
+		--accent: rgba(103, 181, 255, 1);
+	}
+}
+
+@media (prefers-color-scheme: dark) {
+	:root {
+		--text: rgba(240, 240, 240, 1);
+		--background: rgba(10, 10, 10, 1);
+		--primary: rgba(63, 127, 254, 1);
+		--accent: rgba(103, 181, 255, 1);
+	}
+}
+
+*,
+*::before,
+*::after {
+	box-sizing: border-box;
+}
+
+body {
+	font-family: var(--font-family);
+	color: var(--text);
+}
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
