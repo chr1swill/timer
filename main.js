@@ -131,7 +131,12 @@
 			return;
 		}
 
-		if (ticker.timerRunning() === false && displayTime.textContent !== "0") {
+		if (
+			displayTime.textContent !== null &&
+			parseInt(displayTime.textContent) > 0 &&
+			!isNaN(parseInt(displayTime.textContent)) &&
+			displayTime.textContent.trim() !== ""
+		) {
 			ticker.start();
 			return;
 		}
@@ -141,7 +146,8 @@
 			displayTime.textContent = timeSelector.value;
 			ticker.start();
 		} else {
-			timeToCountDownFrom = parseInt(displayTime.textContent);
+			timeToCountDownFrom = timeSelector.valueAsNumber;
+			displayTime.textContent = timeSelector.value;
 			ticker.start();
 		}
 	};
