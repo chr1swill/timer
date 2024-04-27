@@ -20,27 +20,20 @@
 
 		<main class="w-full h-full grid place-content-center">
 			<section
-				id="displayTimer"
 				class="bg-background rounded grid place-content-center shadow-text drop-shadow-sm p-2"
 			>
-				<p data-timer-count class="text-2xl font-bold">For test</p>
+				<p id="displayTime" class="text-2xl font-bold">For test</p>
 			</section>
 
 			<section
-				id="controlTimer"
 				class="w-full h-auto flex flex-col gap-3 shadow-text drop-shadow-sm bg-background rounded justify-center items-center p-2"
 			>
 				<label
-					for="selectTimeForTimer"
+					for="selectTime"
 					class="w-full h-full rounded bg-white text-text p-2 font-base text-lg"
 				>
 					Choose Time
-					<input
-						type="number"
-						id="selectTimeForTimer"
-						name="selectTimeForTimer"
-						min="0"
-					/>
+					<input type="number" id="selectTime" name="selectTime" min="0" />
 				</label>
 
 				<div class="w-full h-full flex flex-row gap-2">
