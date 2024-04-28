@@ -13,50 +13,80 @@
 			rel="stylesheet"
 		/>
 	</head>
-	<body class="grid place-content-center gap-4">
-		<header class="w-full">
+	<body class="grid place-content-center gap-4 mx-3 my-4">
+		<header class="w-full grid gap-4">
 			<h1 class="w-full text-center text-xl font-bold">Web Based Timer</h1>
 		</header>
 
 		<main class="w-full h-full grid place-content-center">
-			<section
-				class="bg-background rounded grid place-content-center shadow-text drop-shadow-sm p-2"
-			>
-				<p id="displayTime" class="text-2xl font-bold min-h-8"></p>
-			</section>
-
-			<section
-				class="w-full h-auto flex flex-col gap-3 shadow-text drop-shadow-sm bg-background rounded justify-center items-center p-2"
-			>
-				<label
-					for="selectTime"
-					class="w-full h-full rounded bg-white text-text p-2 font-base text-lg"
+			<div data-timer="0">
+				<section
+					class="bg-background rounded-t grid place-content-center shadow-text drop-shadow-sm p-2"
 				>
-					Choose Time
-					<input type="number" id="selectTime" name="selectTime" min="0" />
-				</label>
+					<p data-display-time="0" class="text-2xl font-bold min-h-8"></p>
+				</section>
 
-				<div class="w-full h-full flex flex-row gap-2">
-					<button
-						id="stopTimer"
-						class="w-full h-full rounded bg-white text-text p-2 font-base text-lg"
-					>
-						Stop Timer
-					</button>
-					<button
-						id="pauseTimer"
-						class="w-full h-full rounded bg-white text-text p-2 font-base text-lg"
-					>
-						Pause Timer
-					</button>
-					<button
-						id="startTimer"
-						class="w-full h-full rounded bg-white text-text p-2 font-base text-lg"
-					>
-						Start Timer
-					</button>
-				</div>
-			</section>
+				<section
+					class="w-full h-auto flex flex-col gap-3 shadow-text drop-shadow-sm bg-background rounded-b justify-center items-center p-2"
+				>
+					<div class="flex flex-row gap-3 items-center justify-between">
+						<span class="w-fit break-keep font-bold">Choose Time: </span>
+						<div class="grid grid-cols-2 gap-2">
+							<label
+								for="selectTimeMins"
+								class="w-full h-fit flex flex-row gap-2 rounded bg-white text-text p-2 font-base text-lg"
+							>
+								<input
+									type="number"
+									name="selectTimeMins"
+									data-time-selector-mins="0"
+									max="60"
+									min="0"
+									value="0"
+									class="w-full bg-background rounded"
+								/>
+								<span class="w-fit h-fit">mins</span>
+							</label>
+							<label
+								for="selectTimeSecs"
+								class="w-full h-full flex flex-row gap-2 rounded bg-white text-text p-2 font-base text-lg"
+							>
+								<input
+									type="number"
+									name="selectTimeSecs"
+									data-time-selector-secs="0"
+									max="59"
+									min="0"
+									value="0"
+									class="w-full bg-background rounded"
+								/>
+								<span class="w-fit h-fit">secs</span>
+							</label>
+						</div>
+					</div>
+
+					<div class="w-full h-full flex flex-row gap-2">
+						<button
+							data-stop-timer="0"
+							class="w-full h-full rounded bg-white text-text p-2 font-base text-lg"
+						>
+							Stop Timer
+						</button>
+						<button
+							data-pause-timer="0"
+							class="w-full h-full rounded bg-white text-text p-2 font-base text-lg"
+						>
+							Pause Timer
+						</button>
+						<button
+							data-start-timer="0"
+							class="w-full h-full rounded bg-white text-text p-2 font-base text-lg"
+						>
+							Start Timer
+						</button>
+					</div>
+				</section>
+			</div>
 		</main>
 	</body>
 </html>
