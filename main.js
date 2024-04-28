@@ -43,6 +43,9 @@
 			this.selectSecs = /**@type{HTMLInputElement}*/ (timeSelectorSecs);
 		}
 
+		/*
+		 * @returns{number|null}
+		 */
 		start() {
 			if (this.#isTimerRunning === true) {
 				console.error(
@@ -60,6 +63,8 @@
 				return null;
 			}
 			this.#timeToCountDownFrom = startTimerInSeconds;
+			this.timerDisplay.textContent = startTimerInSeconds.toString();
+			return startTimerInSeconds;
 		}
 
 		stop() {
@@ -202,22 +207,16 @@
 			return;
 		}
 
-		const startTimeInSeconds = ticker.updateWallTime();
-
-		if (startTimeInSeconds === null) {
-			console.error(
-				"An error occured while attempting to convert inputed values to seconds",
-			);
-			return;
-		}
-
 		if (
 			displayTime.textContent !== null &&
 			parseInt(displayTime.textContent) > 0 &&
 			!isNaN(parseInt(displayTime.textContent)) &&
 			displayTime.textContent.trim() !== ""
 		) {
-			ticker.start();
+			const startTime = ticker.start();
+			if (startTime === null) {
+				console.error("An error occurred while starting timer");
+			}
 			return;
 		}
 
@@ -226,16 +225,17 @@
 			displayTime.textContent === null ||
 			displayTime.textContent.trim() === ""
 		) {
-			ticker.timerDisplay.textContent = startTimeInSeconds.toString();
-			ticker.start();
-		} else if (!isNaN(parseInt(displayTime.textContent))) {
-			const wallTime = ticker.updateWallTime();
-			if (wallTime === null) {
-				console.error("An error occured while updated the wall time");
-				return;
+			const startTime = ticker.start();
+			if (startTime === null) {
+				console.error("An error occurred while starting timer");
 			}
-
-			ticker.start();
+			return;
+		} else if (!isNaN(parseInt(displayTime.textContent))) {
+			const startTime = ticker.start();
+			if (startTime === null) {
+				console.error("An error occurred while starting timer");
+			}
+			return;
 		} else {
 			console.error(
 				"Why displayTime not a number rn, value: ",
