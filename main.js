@@ -10,7 +10,7 @@
 		 */
 		timeout = 0;
 
-		#timeToCountDownFrom = 0;
+		#timeLeftToDisplay = 0;
 
 		/**
 		 * @type{number}
@@ -44,6 +44,9 @@
 		}
 
 		/*
+		 * returns the timer the user inputed in seconds
+		 * or null if the timer is already running
+		 *
 		 * @returns{number|null}
 		 */
 		start() {
@@ -51,20 +54,17 @@
 				console.error(
 					"You can not start a new timer, a timer is currently running",
 				);
-				return;
+				return null;
 			}
 			const now = Date.now();
 			this.expected = now + this.#interval;
 			this.timeout = window.setTimeout(() => this.step(), this.#interval);
 			this.#isTimerRunning = true;
-			const startTimerInSeconds = this.convertTimeToSeconds();
-			if (startTimerInSeconds === null) {
-				console.error("Could not update Wall Time");
-				return null;
-			}
-			this.#timeToCountDownFrom = startTimerInSeconds;
-			this.timerDisplay.textContent = startTimerInSeconds.toString();
-			return startTimerInSeconds;
+
+			const totalUserInputedTime = this.convertUserInputedTimeToSeconds();
+			this.#timeLeftToDisplay = totalUserInputedTime;
+			this.timerDisplay.textContent = totalUserInputedTime.toString();
+			return totalUserInputedTime;
 		}
 
 		stop() {
@@ -73,20 +73,21 @@
 		}
 
 		#step() {
-			if (this.#timeToCountDownFrom <= 0) {
+			if (this.#timeLeftToDisplay <= 0) {
 				console.log("Timer completed");
 				this.stop();
 				this.#isTimerRunning = false;
-				this.#timeToCountDownFrom = 0;
-				this.timerDisplay.textContent = this.#timeToCountDownFrom.toString();
+				this.#timeLeftToDisplay = 0;
+				this.timerDisplay.textContent = this.#timeLeftToDisplay.toString();
 			}
+
 			const now = Date.now();
 			// positive drift mean clock is slow
 			// 0 drfit is amazing
 			// negative drift mean clock is fast
 			const driftInMs = now - this.expected;
 			console.log("drift: ", driftInMs);
-			console.log("interval: ", this.#interval);
+			console.log("current interval: ", this.#interval);
 			if (driftInMs - this.#interval !== 0) {
 				this.#correctDrift(driftInMs);
 				return;
@@ -94,24 +95,24 @@
 			this.#deincrement();
 			this.expected += this.#interval;
 			this.timeout = window.setTimeout(this.step, Math.max(0, this.#interval));
-			if (this.#timeToCountDownFrom === 0) {
+			if (this.#timeLeftToDisplay === 0) {
 				this.stop();
 				return;
 			}
 		}
 
 		#deincrement() {
-			this.#timeToCountDownFrom--;
-			console.log("Fired with value: ", this.#timeToCountDownFrom);
-			this.timerDisplay.textContent = this.#timeToCountDownFrom.toString();
+			this.#timeLeftToDisplay--;
+			console.log("Fired with value: ", this.#timeLeftToDisplay);
+			this.timerDisplay.textContent = this.#timeLeftToDisplay.toString();
 		}
 
 		/**
 		 * @param{number} driftInMs
 		 */
 		#correctDrift(driftInMs) {
-			this.#timeToCountDownFrom--;
-			this.timerDisplay.textContent = this.#timeToCountDownFrom.toString();
+			this.#timeLeftToDisplay--;
+			this.timerDisplay.textContent = this.#timeLeftToDisplay.toString();
 			console.warn("The drift exceeded the interval, drift: ", driftInMs, "ms");
 			this.#interval = this.#interval - driftInMs;
 			clearTimeout(this.timeout);
@@ -120,11 +121,11 @@
 		}
 
 		getWallTime() {
-			return this.#timeToCountDownFrom;
+			return this.#timeLeftToDisplay;
 		}
 
 		resetWallTime() {
-			this.#timeToCountDownFrom;
+			this.#timeLeftToDisplay;
 		}
 
 		timerRunning() {
@@ -132,15 +133,9 @@
 		}
 
 		/**
-		 * @returns{number|null}
+		 * @returns{number}
 		 */
-		convertTimeToSeconds() {
-			if (this.selectMins === null || this.selectSecs === null) {
-				console.error(
-					"Could not parse inputs values, one or both do not exist",
-				);
-				return null;
-			}
+		convertUserInputedTimeToSeconds() {
 			return this.selectMins.valueAsNumber * 60 + this.selectSecs.valueAsNumber;
 		}
 	}
