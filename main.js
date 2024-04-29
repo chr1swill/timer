@@ -86,14 +86,17 @@
 			// 0 drfit is amazing
 			// negative drift mean clock is fast
 			const driftInMs = now - this.expected;
+			console.log("Expected values: ", this.expected);
+			console.log("Now time: ", now);
 			console.log("drift: ", driftInMs);
-			console.log("current interval: ", this.#interval);
 			if (driftInMs - this.#interval !== 0) {
 				this.#correctDrift(driftInMs);
+				this.expected += this.#interval;
 				return;
 			}
 			this.#deincrement();
 			this.expected += this.#interval;
+			console.log("current interval: ", this.#interval);
 			this.timeout = window.setTimeout(this.step, Math.max(0, this.#interval));
 			if (this.#timeLeftToDisplay === 0) {
 				this.stop();
@@ -111,13 +114,19 @@
 		 * @param{number} driftInMs
 		 */
 		#correctDrift(driftInMs) {
+			this.#interval = this.#interval - driftInMs * 2;
+			clearTimeout(this.timeout);
+			this.timeout = window.setTimeout(this.step, Math.max(0, this.#interval));
+			console.log("Correct new interval for next tick: ", this.#interval);
+
+			if (this.#interval <= 0) {
+				console.error("Drift become to large to recover from it");
+				this.stop();
+			}
+
 			this.#timeLeftToDisplay--;
 			this.timerDisplay.textContent = this.#timeLeftToDisplay.toString();
 			console.warn("The drift exceeded the interval, drift: ", driftInMs, "ms");
-			this.#interval = this.#interval - driftInMs;
-			clearTimeout(this.timeout);
-			this.timeout = window.setTimeout(this.step, Math.max(0, this.#interval));
-			console.log("new interval: ", this.#interval);
 		}
 
 		getWallTime() {
