@@ -4,7 +4,6 @@
 		<meta charset="UTF-8" />
 		<meta name="viewport" content="width=device-width, initial-scale=1" />
 		<title>Timer App</title>
-		<script defer src="main.js"></script>
 		<script defer src="app.js"></script>
 		<link rel="stylesheet" href="styles.css" />
 		<link rel="preconnect" href="https://fonts.googleapis.com" />
@@ -68,16 +67,16 @@
 
 					<div class="w-full h-full flex flex-row gap-2">
 						<button
+							data-reset-timer="0"
+							class="w-full h-full rounded bg-white text-text p-2 font-base text-lg"
+						>
+							Reset Timer
+						</button>
+						<button
 							data-stop-timer="0"
 							class="w-full h-full rounded bg-white text-text p-2 font-base text-lg"
 						>
 							Stop Timer
-						</button>
-						<button
-							data-pause-timer="0"
-							class="w-full h-full rounded bg-white text-text p-2 font-base text-lg"
-						>
-							Pause Timer
 						</button>
 						<button
 							data-start-timer="0"
