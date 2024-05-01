@@ -1,5 +1,7 @@
 (function () {
 	class Timer {
+		#isRunning = false;
+
 		/**
 		 * @param{number} startTime
 		 */
@@ -9,7 +11,8 @@
 			this.expected = Date.now();
 			this.totalDrift = 0;
 			this.timer = this.timer.bind(this);
-			this.timeout = setInterval(() => this.timer(), this.interval);
+			/**@type{number|null}*/
+			this.timeout = setTimeout(() => this.timer(), this.interval);
 		}
 
 		timer() {
@@ -19,45 +22,62 @@
 				return;
 			}
 
-			console.log("START TIMER");
-			this.interval = 1000;
-
 			this.expected += this.interval;
-			console.log("expected time: ", this.expected);
-
 			const now = Date.now();
-			console.log("real time: ", now);
+			console.log("Expected time: ", this.expected);
+			console.log("Time now:      ", now);
 
 			const drift = now - this.expected;
-			console.log("drift: ", drift);
 
 			this.totalDrift += drift;
 
 			if (now !== this.expected) {
-				this.interval = this.interval - drift;
-				console.log("DRIFT: ", drift);
-				console.log("INTERVAL: ", this.interval);
 				this.totalDrift -= drift;
-				console.log("There was some drift");
-				clearInterval(this.timeout);
-				this.timeout = setInterval(() => this.timer(), this.interval);
-			}
 
-			console.log("Current interval: ", this.interval);
-			console.log("Total drift: ", this.totalDrift);
+				if (this.timeout === null) {
+					console.error("Timer is not running, cannot stop it");
+					return;
+				}
+
+				clearTimeout(this.timeout);
+				this.timeout = setTimeout(
+					() => this.timer(),
+					Math.max(0, this.interval - drift),
+				);
+				console.log(
+					"This is the current interval: ",
+					Math.max(0, this.interval - drift),
+				);
+			}
 
 			this.startTime--;
 			self.postMessage(this.startTime);
-			console.log("current time: ", this.startTime);
-			console.log("END TIMER");
 		}
 
 		start() {
-			this.timeout = setInterval(() => this.timer(), this.interval);
+			if (this.#isRunning === true) {
+				console.error("Timer is running, cannot start it again");
+				return;
+			}
+
+			this.#isRunning = true;
+			this.timeout = setTimeout(() => this.timer(), this.interval);
 		}
 
 		stop() {
-			clearInterval(this.timeout);
+			if (this.#isRunning === false) {
+				console.error("Timer is not running, cannot stop it");
+				return;
+			}
+
+			this.#isRunning = false;
+			if (this.timeout === null) {
+				console.error("There is no timeout to clear");
+				return;
+			}
+
+			clearTimeout(this.timeout);
+			this.timeout = null;
 		}
 	}
 
@@ -103,5 +123,9 @@
 			default:
 				console.error("recieved message data of an unknown type", data.command);
 		}
+	});
+
+	self.addEventListener("messageerror", function (e) {
+		console.error("Error: ", e.data);
 	});
 })();
