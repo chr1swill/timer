@@ -1,17 +1,3 @@
-const body = document.body;
-const myDisplay = document.createElement("div");
-body.prepend(myDisplay);
-
-if (window.Worker) {
-	const myWorker = new Worker("workers/worker.js");
-
-	myWorker.onmessage = function (e) {
-		myDisplay.innerText = e.data;
-	};
-} else {
-	console.error("workers not supported");
-}
-
 (function () {
 	if (!window.Worker) {
 		console.error("workers are not supported in your environment");
@@ -108,9 +94,11 @@ if (window.Worker) {
 		 * @type{StartMsg}
 		 */
 		const data = {
-			type: "start",
-			minutes: chooseMinsInput.valueAsNumber,
-			seconds: chooseSecsInput.valueAsNumber,
+			command: 0,
+			options: {
+				minutes: chooseMinsInput.valueAsNumber,
+				seconds: chooseSecsInput.valueAsNumber,
+			},
 		};
 
 		timer.postMessage(data);
