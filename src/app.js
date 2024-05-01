@@ -3,11 +3,10 @@ const myDisplay = document.createElement("div");
 body.prepend(myDisplay);
 
 if (window.Worker) {
-	const myWorker = new Worker("worker.js");
+	const myWorker = new Worker("workers/worker.js");
 
 	myWorker.onmessage = function (e) {
 		myDisplay.innerText = e.data;
-		console.log("Seconds Elapsed: ", e.data);
 	};
 } else {
 	console.error("workers not supported");
@@ -19,7 +18,7 @@ if (window.Worker) {
 		return;
 	}
 
-	const timer = new Worker("timer.js");
+	const timer = new Worker("workers/timer.js");
 
 	/**
 	 * @type{HTMLParagraphElement|null}
@@ -80,7 +79,7 @@ if (window.Worker) {
 	}
 
 	/**
-	 * @typedef{import("./types/types").StartMsg} StartMsg
+	 * @typedef{import("../types/types").StartMsg} StartMsg
 	 */
 
 	timer.onmessage = function (e) {

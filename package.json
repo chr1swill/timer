@@ -3,10 +3,10 @@
   "name": "timer",
   "version": "1.0.0",
   "description": "",
-  "main": "main.js",
+  "main": "./src/app.js",
   "scripts": {
-    "watch:css": "tailwindcss -i ./input.css -o ./styles.css --watch",
-    "build:css": "tailwindcss -i ./input.css -o ./styles.css"
+    "watch:css": "tailwindcss -i ./src/css/input.css -o ./src/css/styles.css --watch",
+    "build:css": "tailwindcss -i ./src/css/input.css -o ./src/css/styles.css"
   },
   "keywords": [],
   "author": "",
