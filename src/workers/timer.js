@@ -35,7 +35,7 @@
 				this.totalDrift -= drift;
 
 				if (this.timeout === null) {
-					console.error("Timer is not running, cannot stop it");
+					console.error("timer is not running, cannot stop it");
 					return;
 				}
 
@@ -48,7 +48,19 @@
 					"This is the current interval: ",
 					Math.max(0, this.interval - drift),
 				);
+
+				this.startTime--;
+				self.postMessage(this.startTime);
+				return;
 			}
+
+			if (this.timeout === null) {
+				console.error("timer is not running, cannot stop it");
+				return;
+			}
+
+			clearTimeout(this.timeout);
+			this.timeout = setTimeout(() => this.timer(), Math.max(0, this.interval));
 
 			this.startTime--;
 			self.postMessage(this.startTime);
