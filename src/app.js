@@ -68,9 +68,25 @@
 	 * @typedef{import("../types/types").StartMsg} StartMsg
 	 */
 
-	timer.onmessage = function (e) {
+	/**
+	 * @typedef{import("../types/types").StopMsg} StopMsg
+	 */
+
+	/**
+	 * @typedef{import("../types/types").ResetMsg} ResetMsg
+	 */
+
+	timer.addEventListener("message", function (e) {
 		display.innerText = e.data;
-	};
+	});
+
+	timer.addEventListener("error", function (e) {
+		console.error("Error: ", e.error);
+	});
+
+	timer.addEventListener("messageerror", function (e) {
+		console.error("Error: ", e, " Source: ", e.source);
+	});
 
 	startBtn.onclick = function () {
 		if (chooseMinsInput === null || chooseSecsInput === null) {
@@ -105,10 +121,26 @@
 	};
 
 	stopBtn.onclick = function () {
-		timer.postMessage("stop");
+		/**
+		 * @type{StopMsg}
+		 */
+		const data = {
+			command: 1,
+			options: {},
+		};
+
+		timer.postMessage(data);
 	};
 
 	resetBtn.onclick = function () {
-		timer.postMessage("reset");
+		/**
+		 * @type{ResetMsg}
+		 */
+		const data = {
+			command: 2,
+			options: {},
+		};
+
+		timer.postMessage(data);
 	};
 })();

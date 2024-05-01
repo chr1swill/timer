@@ -3,9 +3,9 @@
 		#isRunning = false;
 
 		/**
-		 * @param{number} startTime
+		 * @param{number} [startTime=0]
 		 */
-		constructor(startTime) {
+		constructor(startTime = 0) {
 			this.startTime = startTime;
 			this.interval = 1000;
 			this.expected = Date.now();
@@ -13,6 +13,10 @@
 			this.timer = this.timer.bind(this);
 			/**@type{number|null}*/
 			this.timeout = setTimeout(() => this.timer(), this.interval);
+		}
+
+		isTicking() {
+			return this.#isRunning;
 		}
 
 		timer() {
@@ -35,7 +39,7 @@
 				this.totalDrift -= drift;
 
 				if (this.timeout === null) {
-					console.error("timer is not running, cannot stop it");
+					console.error("timer is not running, cannot start it");
 					return;
 				}
 
@@ -91,6 +95,13 @@
 			clearTimeout(this.timeout);
 			this.timeout = null;
 		}
+
+		reset() {
+			if (this.#isRunning === true) this.stop();
+			this.startTime = 0;
+			this.interval = 1000;
+			this.totalDrift = 0;
+		}
 	}
 
 	/**
@@ -112,6 +123,7 @@
 		 * @type{MessageT}
 		 */
 		const data = e.data;
+		const timer = new Timer();
 
 		/**
 		 * @link{import("../../types/types").CommandType}
@@ -119,18 +131,37 @@
 		 */
 		switch (data.command) {
 			case /**@type{import("../../types/types").CommandType.START} = 0 */ 0:
+				if (timer.isTicking() === true) {
+					console.warn(
+						"Timer is already running, stop the timer before starting a new one",
+					);
+					return;
+				}
+
 				const message = /**@type{StartMsg}*/ (data);
 				const totalSeconds = normalizeInputedTimeToSeconds(
 					message.options.minutes,
 					message.options.seconds,
 				);
 
-				const timer = new Timer(totalSeconds);
+				if (timer.startTime === 0) {
+					timer.startTime = totalSeconds;
+				}
+
 				timer.start();
 				break;
 			case /**@type{import("../../types/types").CommandType.STOP} = 1*/ 1:
+				if (timer.isTicking() === false) {
+					console.warn(
+						"Timer is already stopped, start a timer before attemptting to stop it",
+					);
+					return;
+				}
+
+				timer.stop();
 				break;
 			case /**@type{import("../../types/types").CommandType.RESET = 2}*/ 2:
+				timer.reset();
 				break;
 			default:
 				console.error("recieved message data of an unknown type", data.command);
@@ -138,6 +169,10 @@
 	});
 
 	self.addEventListener("messageerror", function (e) {
-		console.error("Error: ", e.data);
+		console.error("Error: ", e, " Source: ", e.source);
+	});
+
+	self.addEventListener("error", function (e) {
+		console.error("Error: ", e.error);
 	});
 })();
