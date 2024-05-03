@@ -65,6 +65,7 @@
 
 			clearTimeout(this.timeout);
 			this.timeout = setTimeout(() => this.timer(), Math.max(0, this.interval));
+			this.#isRunning = true;
 
 			this.startTime--;
 			self.postMessage(this.startTime);
@@ -81,7 +82,7 @@
 		}
 
 		stop() {
-			if (this.#isRunning === false) {
+			if (this.isTicking() === false) {
 				console.error("Timer is not running, cannot stop it");
 				return;
 			}
@@ -138,6 +139,11 @@
 					return;
 				}
 
+				if (timer.startTime > 0) {
+					timer.start();
+					return;
+				}
+
 				const message = /**@type{StartMsg}*/ (data);
 				const totalSeconds = normalizeInputedTimeToSeconds(
 					message.options.minutes,
@@ -146,14 +152,13 @@
 
 				if (timer.startTime === 0) {
 					timer.startTime = totalSeconds;
+					timer.start();
 				}
-
-				timer.start();
 				break;
 			case /**@type{import("../../types/types").CommandType.STOP} = 1*/ 1:
 				if (timer.isTicking() === false) {
 					console.warn(
-						"Timer is already stopped, start a timer before attemptting to stop it",
+						"Timer is already stopped, start a timer before attempting to stop it",
 					);
 					return;
 				}
