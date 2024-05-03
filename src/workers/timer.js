@@ -1,6 +1,9 @@
 (function () {
 	class Timer {
-		#isRunning = false;
+		/**
+		 * @type{boolean}
+		 */
+		#isRunning;
 
 		/**
 		 * @param{number} [startTime=0]
@@ -13,6 +16,7 @@
 			this.timer = this.timer.bind(this);
 			/**@type{number|null}*/
 			this.timeout = setTimeout(() => this.timer(), this.interval);
+			this.#isRunning = false;
 		}
 
 		isTicking() {
@@ -43,11 +47,13 @@
 					return;
 				}
 
+				console.log("This is the OLD timeout id: ", this.timeout);
 				clearTimeout(this.timeout);
 				this.timeout = setTimeout(
 					() => this.timer(),
 					Math.max(0, this.interval - drift),
 				);
+				console.log("This is the NEW timeout id: ", this.timeout);
 				console.log(
 					"This is the current interval: ",
 					Math.max(0, this.interval - drift),
@@ -63,9 +69,10 @@
 				return;
 			}
 
+			console.log("This is the OLD timeout id: ", this.timeout);
 			clearTimeout(this.timeout);
 			this.timeout = setTimeout(() => this.timer(), Math.max(0, this.interval));
-			this.#isRunning = true;
+			console.log("This is the NEW timeout id: ", this.timeout);
 
 			this.startTime--;
 			self.postMessage(this.startTime);
@@ -78,14 +85,19 @@
 			}
 
 			this.#isRunning = true;
+			console.log("In start() this.#isRunning set to: ", this.#isRunning);
+
 			this.timeout = setTimeout(() => this.timer(), this.interval);
+			console.log("This is the START timeout id: ", this.timeout);
 		}
 
 		stop() {
-			if (this.isTicking() === false) {
-				console.error("Timer is not running, cannot stop it");
-				return;
-			}
+			console.log("In stop() this.#isRunning set to: ", this.#isRunning);
+			console.trace("Stack trace of this.#isRunning: ", this.#isRunning);
+			//if (this.isTicking() === false) {
+			//console.error("Timer is not running, cannot stop it");
+			//return;
+			//}
 
 			this.#isRunning = false;
 			if (this.timeout === null) {
@@ -93,7 +105,9 @@
 				return;
 			}
 
+			console.log("This is the STOPPED timeout id: ", this.timeout);
 			clearTimeout(this.timeout);
+			clearTimeout(this.timeout - 1);
 			this.timeout = null;
 		}
 
@@ -139,6 +153,7 @@
 					return;
 				}
 
+				console.log("timer on timer: ", timer.startTime);
 				if (timer.startTime > 0) {
 					timer.start();
 					return;
@@ -156,12 +171,12 @@
 				}
 				break;
 			case /**@type{import("../../types/types").CommandType.STOP} = 1*/ 1:
-				if (timer.isTicking() === false) {
-					console.warn(
-						"Timer is already stopped, start a timer before attempting to stop it",
-					);
-					return;
-				}
+				//if (timer.isTicking() === false) {
+				//console.warn(
+				//"Timer is already stopped, start a timer before attempting to stop it",
+				//);
+				//return;
+				//}
 
 				timer.stop();
 				break;
