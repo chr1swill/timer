@@ -4,6 +4,37 @@
 		return;
 	}
 
+	if (!("serviceWorker" in navigator)) {
+		console.error("service worker on are not supported in your enviroment");
+		return;
+	}
+
+	window.onload = function () {
+		navigator.serviceWorker.register("./notifacation.js").then(
+			function (registration) {
+				console.log(
+					"Service Worker registered with scrope:",
+					registration.scope,
+				);
+			},
+			function (err) {
+				console.error("Service Worker registration failed:", err);
+			},
+		);
+
+		Notification.requestPermission().then(function (permission) {
+			if (permission === "granted") {
+				console.log("Great permission are granted");
+				return;
+			} else {
+				console.error(
+					"To have the most fun with this app you need to grant permissions",
+				);
+				return;
+			}
+		});
+	};
+
 	const timer = new Worker("workers/timer.js");
 
 	/**
@@ -78,6 +109,20 @@
 
 	timer.addEventListener("message", function (e) {
 		display.innerText = e.data;
+		if (e.data === 0) {
+			navigator.serviceWorker
+				.getRegistration()
+				.then(function (reg) {
+					const options = {
+						body: "Your Timer is completed",
+					};
+					reg?.showNotification("The Title", options);
+				})
+				.catch(function (err) {
+					console.error(err);
+					return;
+				});
+		}
 	});
 
 	timer.addEventListener("error", function (e) {
