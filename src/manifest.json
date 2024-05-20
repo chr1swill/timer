@@ -1,0 +1,14 @@
+{
+  "name": "Web Timer",
+  "short_name": "Timer",
+  "description": "A basic web timer that sends a notification when the timer is complete.",
+  "start_url": "/index.html",
+  "display": "standalone",
+  "background_color": "#ffffff",
+  "theme_color": "#4CAF50",
+  "icons": [
+  ],
+  "permissions": [
+    "notifications"
+  ],
+}
