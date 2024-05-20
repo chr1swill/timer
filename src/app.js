@@ -10,7 +10,7 @@
 	}
 
 	window.onload = function () {
-		navigator.serviceWorker.register("./notifacation.js").then(
+		navigator.serviceWorker.register("./workers/notifacation.js").then(
 			function (registration) {
 				console.log(
 					"Service Worker registered with scrope:",
@@ -22,17 +22,32 @@
 			},
 		);
 
-		Notification.requestPermission().then(function (permission) {
-			if (permission === "granted") {
-				console.log("Great permission are granted");
-				return;
-			} else {
-				console.error(
-					"To have the most fun with this app you need to grant permissions",
-				);
-				return;
-			}
-		});
+		const setUpNotiBtn = document.createElement("button");
+		setUpNotiBtn.classList.add(
+			"w-full",
+			"h-full",
+			"rounded",
+			"bg-background",
+			"text-text",
+			"p-2",
+			"font-base",
+			"text-lg",
+		);
+		setUpNotiBtn.innerText = "set up perimisions";
+		setUpNotiBtn.onclick = function () {
+			Notification.requestPermission().then(function (permission) {
+				if (permission === "granted") {
+					console.log("Great permission are granted");
+					return;
+				} else {
+					console.error(
+						"To have the most fun with this app you need to grant permissions",
+					);
+					return;
+				}
+			});
+		};
+		document.body.append(setUpNotiBtn);
 	};
 
 	const timer = new Worker("workers/timer.js");
